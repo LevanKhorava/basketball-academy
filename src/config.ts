@@ -14,8 +14,8 @@
 // real security boundary (see README → Security).
 // ===========================================================================
 
-export const SUPABASE_URL = "";
-export const SUPABASE_PUBLISHABLE_KEY = "";
+export const SUPABASE_URL = "https://hhnsvdilwehavpgijwcp.supabase.co";
+export const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_1Q2b6rSUZo9bR68V8GF5Ng_3U0GudPj";
 
 // /admin login (static, checked in the browser).
 export const ADMIN_USERNAME = "admin";
