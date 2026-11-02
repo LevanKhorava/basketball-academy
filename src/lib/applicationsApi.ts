@@ -12,15 +12,24 @@ export const APPLICATION_STATUSES: readonly ApplicationStatus[] = [
   "reviewed",
 ];
 
-/** Row shape as stored in Postgres (snake_case, mirrors schema.sql). */
+/** Basketball level chosen on the form: დამწყები / თამაშობს კალათბურთს. */
+export type PlayerLevel = "beginner" | "plays";
+
+/** Row shape as stored in Postgres (snake_case, mirrors schema.sql).
+ * Nullable fields may be null on rows submitted before 2026-11-02. */
 interface ApplicationRow {
   id: string;
   first_name: string;
   last_name: string;
+  birth_year: number | null;
   email: string;
   phone: string;
-  youtube_url: string;
-  youtube_video_id: string;
+  address: string | null;
+  level: PlayerLevel | null;
+  referral_source: string | null;
+  parental_consent: boolean | null;
+  youtube_url: string | null;
+  youtube_video_id: string | null;
   status: ApplicationStatus;
   created_at: string;
   updated_at: string;
@@ -30,10 +39,16 @@ export interface Application {
   id: string;
   firstName: string;
   lastName: string;
+  birthYear: number | null;
   email: string;
   phone: string;
-  youtubeUrl: string;
-  youtubeVideoId: string;
+  address: string | null;
+  level: PlayerLevel | null;
+  referralSource: string | null;
+  parentalConsent: boolean | null;
+  /** Optional since 2026-11-02 — null when the applicant attached no video. */
+  youtubeUrl: string | null;
+  youtubeVideoId: string | null;
   status: ApplicationStatus;
   createdAt: string;
   updatedAt: string;
@@ -42,9 +57,15 @@ export interface Application {
 export interface ApplicationInput {
   firstName: string;
   lastName: string;
+  birthYear: string;
   email: string;
   phone: string;
+  address: string;
+  level: PlayerLevel;
+  referralSource: string;
+  /** Empty string means "no video attached". */
   youtubeUrl: string;
+  parentalConsent: boolean;
 }
 
 /** Every api call resolves (never throws); `message` is user-ready Georgian. */
@@ -54,8 +75,13 @@ const toApplication = (row: ApplicationRow): Application => ({
   id: row.id,
   firstName: row.first_name,
   lastName: row.last_name,
+  birthYear: row.birth_year,
   email: row.email,
   phone: row.phone,
+  address: row.address,
+  level: row.level,
+  referralSource: row.referral_source,
+  parentalConsent: row.parental_consent,
   youtubeUrl: row.youtube_url,
   youtubeVideoId: row.youtube_video_id,
   status: row.status,
@@ -110,25 +136,41 @@ export async function submitApplication(input: ApplicationInput): Promise<ApiRes
   if (!supabase) {
     return { ok: false, message: content.form.submitErrors.notConfigured };
   }
+  if (!input.parentalConsent) {
+    return { ok: false, message: content.form.errors.consentRequired };
+  }
 
-  const videoId = parseYoutubeVideoId(input.youtubeUrl);
-  if (!videoId) {
-    return { ok: false, message: content.form.errors.youtubeInvalid };
+  // YouTube is optional; when a link was typed it must parse to a valid id.
+  const trimmedUrl = input.youtubeUrl.trim();
+  let youtubeUrl: string | null = null;
+  let youtubeVideoId: string | null = null;
+  if (trimmedUrl) {
+    const videoId = parseYoutubeVideoId(trimmedUrl);
+    if (!videoId) {
+      return { ok: false, message: content.form.errors.youtubeInvalid };
+    }
+    youtubeUrl = normalizeYoutubeUrl(trimmedUrl);
+    youtubeVideoId = videoId;
   }
 
   const row = {
     first_name: input.firstName.trim(),
     last_name: input.lastName.trim(),
+    birth_year: Number(input.birthYear.trim()),
     email: input.email.trim().toLowerCase(),
     phone: normalizePhone(input.phone.trim()),
-    youtube_url: normalizeYoutubeUrl(input.youtubeUrl),
-    youtube_video_id: videoId,
+    address: input.address.trim(),
+    level: input.level,
+    referral_source: input.referralSource.trim(),
+    parental_consent: input.parentalConsent,
+    youtube_url: youtubeUrl,
+    youtube_video_id: youtubeVideoId,
   };
 
   try {
-    // NOTE: no `.select()` here — anon has no SELECT grant/policy, so asking
-    // for the inserted row back would make a successful insert look like a
-    // failure. Without it supabase-js sends `Prefer: return=minimal`.
+    // NOTE: no `.select()` here — asking for the inserted row back would make
+    // a successful insert look like a failure under the key's permissions.
+    // Without it supabase-js sends `Prefer: return=minimal`.
     const { error } = await supabase.from("applications").insert(row);
     if (error) return { ok: false, message: toGeorgianMessage(error, "submit") };
     return { ok: true, data: null };
@@ -172,7 +214,7 @@ export async function updateApplicationStatus(
   }
   try {
     // Only `status` is sent — the column-level grant in schema.sql rejects
-    // any other column, even with a valid admin session.
+    // any other column.
     const { error, count } = await supabase
       .from("applications")
       .update({ status }, { count: "exact" })

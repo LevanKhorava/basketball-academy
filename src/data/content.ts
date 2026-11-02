@@ -75,25 +75,41 @@ export const content = {
     labels: {
       firstName: "სახელი", // (supplied)
       lastName: "გვარი", // (supplied)
+      birthYear: "დაბადების წელი", // (client request, 2026-11-02)
       email: "ელფოსტა", // (supplied)
       phone: "ტელეფონის ნომერი", // (supplied)
+      address: "მისამართი", // (client request, 2026-11-02)
+      level: "საკალათბურთო დონე", // (client request, 2026-11-02)
+      referralSource: "საიდან გაიგე აკადემიის შესახებ?", // (client request, 2026-11-02)
       youtubeUrl: "YouTube ვიდეოს ბმული", // (supplied)
+      optionalSuffix: "(არასავალდებულო)",
     },
     placeholders: {
       firstName: "გიორგი",
       lastName: "ბერიძე",
+      birthYear: "2012",
       email: "giorgi@example.com",
       phone: "+995 5XX XX XX XX",
+      address: "თბილისი, ვაჟა-ფშაველას 10",
       youtubeUrl: "https://www.youtube.com/watch?v=...",
     },
+    selectPlaceholder: "აირჩიე",
+    levelOptions: [
+      { value: "beginner", label: "დამწყები" }, // (client request, 2026-11-02)
+      { value: "plays", label: "თამაშობს კალათბურთს" }, // (client request, 2026-11-02)
+    ],
+    referralOptions: ["სოციალური ქსელები", "მეგობრებისგან / ნაცნობებისგან", "ტელევიზია / მედია", "სხვა"],
+    consentLabel: "ვადასტურებ მშობლის (კანონიერი წარმომადგენლის) თანხმობას ამ განაცხადის გაგზავნაზე.", // (client request, 2026-11-02)
     help: {
       youtube: "ჩასვი შენი თამაშის ან ვარჯიშის ვიდეოს ბმული (youtube.com ან youtu.be).",
     },
     errors: {
       required: "ეს ველი სავალდებულოა",
+      birthYearInvalid: "მიუთითე დაბადების სწორი წელი (მაგ. 2012)",
       emailInvalid: "ელფოსტის მისამართი არასწორია",
       phoneInvalid: "ტელეფონის ნომერი არასწორია (მაგ.: +995 555 12 34 56)",
       youtubeInvalid: "YouTube ბმული არასწორია — გამოიყენე youtube.com ან youtu.be ბმული",
+      consentRequired: "გასაგრძელებლად საჭიროა მშობლის თანხმობა",
     },
     preview: {
       title: "ვიდეოს გადახედვა",
@@ -101,7 +117,7 @@ export const content = {
       fallbackNote: "თუ ვიდეო აქ არ ჩანს, შესაძლოა მისი ჩაშენება შეზღუდული იყოს.",
       watchOnYoutube: "ნახე YouTube-ზე",
     },
-    submit: "გააგზავნე განაცხადი",
+    submit: "დარეგისტრირდი", // (client request, 2026-11-02 — replaces "გააგზავნე განაცხადი")
     submitting: "იგზავნება…",
     submitErrors: {
       notConfigured: "განაცხადის გაგზავნა ამჟამად ვერ ხერხდება — სერვისი ჯერ არ არის კონფიგურირებული. სცადე მოგვიანებით.",
@@ -176,15 +192,22 @@ export const content = {
       heading: "განაცხადის დეტალები",
       backToList: "← სიაში დაბრუნება",
       labels: {
+        birthYear: "დაბადების წელი",
         email: "ელფოსტა",
         phone: "ტელეფონის ნომერი",
+        address: "მისამართი",
+        level: "საკალათბურთო დონე",
+        referralSource: "საიდან გაიგო აკადემიის შესახებ",
+        consent: "მშობლის თანხმობა",
         youtubeUrl: "YouTube ბმული",
         videoId: "ვიდეოს ID",
         createdAt: "გაგზავნის თარიღი",
         updatedAt: "ბოლო განახლება",
         status: "სტატუსი",
       },
+      consentConfirmed: "დადასტურებულია",
       videoHeading: "მოთამაშის ვიდეო",
+      noVideo: "ვიდეო არ არის მითითებული.",
       statusChange: "სტატუსის შეცვლა",
       statusSaving: "ინახება…",
       playVideo: "ვიდეოს ჩართვა",

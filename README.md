@@ -65,8 +65,9 @@ dev server. **No Supabase Auth user is needed** — admin login is static.
   status** via the REST API. Someone technical who extracts the key could do
   those operations without the password.
 - What stays enforced server-side regardless:
-  - inserts can only set the 6 content columns — `status` is forced to
-    `pending`, ids/timestamps come from defaults;
+  - inserts can only set the applicant content columns — `status` is forced
+    to `pending`, ids/timestamps come from defaults, and the insert policy
+    requires birth year, address, level, referral source and parental consent;
   - applicant data is immutable (only `status` has UPDATE permission);
   - every value is re-validated by CHECK constraints (email/phone/YouTube-id
     formats, lengths, status whitelist);
