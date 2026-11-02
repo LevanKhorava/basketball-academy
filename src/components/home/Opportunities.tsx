@@ -49,7 +49,10 @@ const Opportunities = () => (
         <p className="text-sm font-bold uppercase tracking-[0.2em] text-court-500">
           {content.opportunities.lead}
         </p>
-        <h2 id="opportunities-heading" className="mt-3 text-3xl font-black sm:text-4xl">
+        <h2
+          id="opportunities-heading"
+          className="heading-accent heading-accent-center mt-3 text-3xl font-black sm:text-4xl"
+        >
           {content.opportunities.heading}
         </h2>
       </Reveal>
@@ -58,12 +61,22 @@ const Opportunities = () => (
         {content.opportunities.items.map((item, index) => (
           <li key={item.title}>
             <Reveal delay={index * 100} className="h-full">
-              <div className="flex h-full flex-col gap-4 rounded-2xl border border-white/8 bg-charcoal-900 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-court-500/40 hover:shadow-[0_12px_40px_rgba(0,0,0,0.45)]">
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-court-500/15 text-court-400">
+              <div className="group relative flex h-full flex-col gap-4 overflow-hidden rounded-2xl border border-white/8 bg-charcoal-900 p-6 transition-all duration-300 hover:-translate-y-1.5 hover:border-court-500/40 hover:shadow-[0_16px_44px_rgba(0,0,0,0.5)]">
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-x-0 top-0 h-[3px] origin-left scale-x-0 bg-gradient-to-r from-court-500 to-court-300 transition-transform duration-500 group-hover:scale-x-100"
+                />
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -right-1 -top-3 select-none font-display text-7xl leading-none text-white/[0.04] transition-colors duration-300 group-hover:text-court-500/15"
+                >
+                  0{index + 1}
+                </span>
+                <span className="relative flex h-11 w-11 items-center justify-center rounded-xl bg-court-500/15 text-court-400 transition-all duration-300 group-hover:-rotate-6 group-hover:scale-110 group-hover:bg-court-500/25 group-hover:text-court-300">
                   {icons[index]}
                 </span>
-                <h3 className="text-lg font-bold leading-snug">{item.title}</h3>
-                <p className="text-sm leading-relaxed text-white/60">{item.body}</p>
+                <h3 className="relative text-lg font-bold leading-snug">{item.title}</h3>
+                <p className="relative text-sm leading-relaxed text-white/60">{item.body}</p>
               </div>
             </Reveal>
           </li>

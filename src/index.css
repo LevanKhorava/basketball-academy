@@ -22,6 +22,9 @@
   --color-court-700: #c84a08;
 }
 
+/* ---------------------------------------------------------------------------
+ * Keyframes
+ * ------------------------------------------------------------------------- */
 @keyframes fadeSlideUp {
   from {
     opacity: 0;
@@ -33,6 +36,131 @@
   }
 }
 
+/* Basketball bounce: gravity fall, squash on contact, decelerating rise.
+ * --bounce-h is the apex (a negative translateY). */
+@keyframes ballDrop {
+  0%,
+  100% {
+    transform: translateY(var(--bounce-h, -4.5rem));
+    animation-timing-function: cubic-bezier(0.4, 0, 0.8, 0.45);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.2, 0.55, 0.6, 1);
+  }
+}
+
+@keyframes ballSquash {
+  0%,
+  42%,
+  58%,
+  100% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.16, 0.84);
+  }
+}
+
+@keyframes ballShadow {
+  0%,
+  100% {
+    transform: scale(0.45);
+    opacity: 0.15;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+}
+
+@keyframes spinSlow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes floatY {
+  0%,
+  100% {
+    transform: translateY(-7px);
+  }
+  50% {
+    transform: translateY(7px);
+  }
+}
+
+@keyframes marqueeScroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes sheenSweep {
+  0% {
+    transform: translateX(-160%) skewX(-16deg);
+  }
+  55%,
+  100% {
+    transform: translateX(260%) skewX(-16deg);
+  }
+}
+
+@keyframes glowPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(255, 107, 26, 0.45),
+      0 10px 34px rgba(255, 107, 26, 0.25);
+  }
+  50% {
+    box-shadow:
+      0 0 0 14px rgba(255, 107, 26, 0),
+      0 10px 34px rgba(255, 107, 26, 0.4);
+  }
+}
+
+@keyframes drawLine {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes watermarkPan {
+  from {
+    transform: translateX(-2.5%);
+  }
+  to {
+    transform: translateX(2.5%);
+  }
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes borderSpin {
+  to {
+    --angle: 360deg;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Base
+ * ------------------------------------------------------------------------- */
 :root {
   color-scheme: dark;
 }
@@ -79,6 +207,196 @@ body {
   color: var(--color-charcoal-950);
 }
 
+/* ---------------------------------------------------------------------------
+ * Animation helpers
+ * ------------------------------------------------------------------------- */
+.animate-spin-slow {
+  animation: spinSlow 16s linear infinite;
+}
+
+.animate-float {
+  animation: floatY 6s ease-in-out infinite;
+}
+
+/* Bouncing basketball (see <BouncingBall>): outer = trajectory,
+ * inner = squash & stretch, sibling = ground shadow. */
+.ball-bounce {
+  animation: ballDrop 1s infinite;
+}
+
+.ball-squash {
+  animation: ballSquash 1s infinite;
+  transform-origin: center bottom;
+}
+
+.ball-shadow {
+  animation: ballShadow 1s infinite;
+}
+
+/* Infinite marquee: the track holds two identical copies and pans by -50%. */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll var(--marquee-speed, 30s) linear infinite;
+}
+
+/* Light sweep across a button every few seconds. */
+.btn-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-sheen::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: translateX(-160%) skewX(-16deg);
+  animation: sheenSweep 3.4s ease-in-out infinite;
+}
+
+.btn-sheen:disabled::before {
+  animation: none;
+}
+
+/* Pulsing orange halo for the primary CTA. */
+.glow-cta {
+  animation: glowPulse 2.6s ease-in-out infinite;
+}
+
+/* Rotating conic highlight traced along an element's border. */
+.glow-border {
+  position: relative;
+}
+
+.glow-border::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--angle),
+    rgba(255, 107, 26, 0) 0deg,
+    rgba(255, 107, 26, 0.9) 40deg,
+    rgba(255, 164, 104, 0.45) 80deg,
+    rgba(255, 107, 26, 0) 130deg,
+    rgba(255, 107, 26, 0) 220deg,
+    rgba(255, 107, 26, 0.35) 270deg,
+    rgba(255, 107, 26, 0) 320deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: borderSpin 7s linear infinite;
+}
+
+/* Gradient type treatments. */
+.text-gradient-hero {
+  background: linear-gradient(100deg, #ffffff 45%, #ffd7bd 72%, var(--color-court-400) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text-gradient-court {
+  background: linear-gradient(180deg, var(--color-court-300), var(--color-court-600));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Court lines sketch themselves in (shapes must set pathLength={1}). */
+.court-draw :is(path, circle) {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: drawLine 2.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.court-draw :is(path, circle):nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.court-draw :is(path, circle):nth-child(2) {
+  animation-delay: 0.5s;
+}
+
+.court-draw :is(path, circle):nth-child(3) {
+  animation-delay: 0.85s;
+}
+
+.court-draw :is(path, circle):nth-child(4) {
+  animation-delay: 1.15s;
+}
+
+/* Pointer parallax: the container sets --mx/--my (via useParallax), layers
+ * pick their own --depth in px. */
+.parallax-layer {
+  transform: translate3d(
+    calc(var(--mx, 0) * var(--depth, 10) * 1px),
+    calc(var(--my, 0) * var(--depth, 10) * 1px),
+    0
+  );
+}
+
+/* Animated underline for nav/footer links. */
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 2px;
+  width: 100%;
+  border-radius: 9999px;
+  background: var(--color-court-500);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Short gradient rule under section headings. */
+.heading-accent {
+  position: relative;
+  padding-bottom: 0.9rem;
+}
+
+.heading-accent::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 4px;
+  width: 3.5rem;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--color-court-500), var(--color-court-300));
+}
+
+.heading-accent-center::after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ---------------------------------------------------------------------------
+ * Reduced motion
+ * ------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

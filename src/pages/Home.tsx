@@ -1,7 +1,9 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Hero from "../components/home/Hero";
+import Ticker from "../components/home/Ticker";
 import AcademyIntro from "../components/home/AcademyIntro";
+import StatsStrip from "../components/home/StatsStrip";
 import Opportunities from "../components/home/Opportunities";
 import RegistrationSection from "../components/home/RegistrationSection";
 import { content } from "../data/content";
@@ -17,7 +19,9 @@ const Home = () => (
     <Navbar />
     <main id="main">
       <Hero />
+      <Ticker />
       <AcademyIntro />
+      <StatsStrip />
       <Opportunities />
       <RegistrationSection />
     </main>

@@ -28,7 +28,7 @@ const SuccessModal = ({ open, onClose }: SuccessModalProps) => {
         aria-labelledby="success-modal-title"
         aria-describedby="success-modal-body"
         tabIndex={-1}
-        className="relative w-full max-w-md rounded-3xl border border-white/10 bg-charcoal-900 p-8 text-center shadow-2xl"
+        className="relative w-full max-w-md rounded-3xl border border-white/10 bg-charcoal-900 p-8 text-center shadow-2xl animate-[modalPop_0.4s_cubic-bezier(0.34,1.56,0.64,1)_both]"
       >
         <button
           type="button"

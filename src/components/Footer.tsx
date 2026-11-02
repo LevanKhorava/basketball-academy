@@ -59,7 +59,7 @@ const Footer = () => {
                   <li key={link.href}>
                     <a
                       href={link.href}
-                      className="text-sm text-white/70 transition-colors hover:text-white"
+                      className="nav-link text-sm text-white/70 transition-colors hover:text-white"
                     >
                       {link.label}
                     </a>
@@ -110,7 +110,7 @@ const Footer = () => {
                         href={social.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-white/70 transition-colors hover:text-white"
+                        className="nav-link text-sm text-white/70 transition-colors hover:text-white"
                       >
                         {social.name}
                       </a>

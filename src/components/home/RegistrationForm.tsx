@@ -269,7 +269,7 @@ const RegistrationForm = () => {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full rounded-full bg-court-500 px-6 py-4 text-base font-bold text-charcoal-950 transition-all duration-300 hover:bg-court-400 hover:shadow-[0_8px_30px_rgba(255,107,26,0.3)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+          className="btn-sheen w-full rounded-full bg-court-500 px-6 py-4 text-base font-bold text-charcoal-950 transition-all duration-300 hover:-translate-y-0.5 hover:bg-court-400 hover:shadow-[0_8px_30px_rgba(255,107,26,0.3)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {submitting ? (
             <span className="inline-flex items-center justify-center gap-2.5">
